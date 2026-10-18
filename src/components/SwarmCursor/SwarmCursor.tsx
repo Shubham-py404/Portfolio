@@ -1,4 +1,4 @@
-import { useEffect, useRef, CSSProperties, ReactNode } from 'react';
+import { useEffect, useRef, useState, CSSProperties, ReactNode } from 'react';
 import './SwarmCursor.css';
 
 const MAX_PARTICLES = 2000;
@@ -82,6 +82,7 @@ const compile = (gl: WebGL2RenderingContext, type: number, source: string): WebG
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
   if (gl.getShaderParameter(shader, gl.COMPILE_STATUS)) return shader;
+  console.error('[SwarmCursor] Shader compile error:', gl.getShaderInfoLog(shader));
   gl.deleteShader(shader);
   return null;
 };
@@ -102,6 +103,7 @@ const link = (gl: WebGL2RenderingContext): ShaderProgram | null => {
   gl.deleteShader(vertex);
   gl.deleteShader(fragment);
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    console.error('[SwarmCursor] Program link error:', gl.getProgramInfoLog(program));
     gl.deleteProgram(program);
     return null;
   }
@@ -200,6 +202,7 @@ const SwarmCursor = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wakeRef = useRef<(() => void) | null>(null);
+  const [isSupported, setIsSupported] = useState(true);
   const ink = lightMode ? '#18181b' : '#ffffff';
   const settings = {
     count: Math.round(clampVal(count, 1, MAX_PARTICLES)),
@@ -229,16 +232,37 @@ const SwarmCursor = ({
   useEffect(() => {
     const container = containerRef.current;
     const canvas = canvasRef.current;
-    const gl = canvas?.getContext('webgl2', {
-      alpha: true,
-      premultipliedAlpha: true,
-      antialias: false,
-      depth: false,
-      stencil: false,
-    });
-    if (!container || !canvas || !gl) return undefined;
-    const shader = link(gl);
-    if (!shader) return undefined;
+    if (!container || !canvas) return undefined;
+
+    let gl: WebGL2RenderingContext | null = null;
+    try {
+      gl = canvas.getContext('webgl2', {
+        alpha: true,
+        premultipliedAlpha: true,
+        antialias: false,
+        depth: false,
+        stencil: false,
+      }) as WebGL2RenderingContext | null;
+    } catch {
+      gl = null;
+    }
+
+    if (!gl) {
+      setIsSupported(false);
+      return undefined;
+    }
+
+    let shader: ReturnType<typeof link> | null = null;
+    try {
+      shader = link(gl);
+    } catch {
+      shader = null;
+    }
+
+    if (!shader) {
+      setIsSupported(false);
+      return undefined;
+    }
     const u = shader.uniforms;
 
     const slots = MAX_PARTICLES + 1;
@@ -395,7 +419,7 @@ const SwarmCursor = ({
       const j1 = Math.min(rows - 2, Math.ceil((anchor.y + reach) / cell));
       const inv = 1 / (radius * radius * 0.55);
       const moving = Math.hypot(anchor.moveX, anchor.moveY);
-      const grab = (1 - Math.exp(-dt * 20)) * clampVal(moving / 240, 0, 1) * presence;
+      const grab = (1 - Math.exp(-dt * 25 * s.speed)) * clampVal(moving / 200, 0, 1) * presence;
       const whirl = ring.active ? 0 : radius * (0.5 + 4 * (1 - ease)) * (0.35 + 0.65 * s.speed);
       const churn = s.wander * radius * 14 * (0.4 + 0.6 * s.speed);
       const fk = 1.4 / radius;
@@ -550,8 +574,9 @@ const SwarmCursor = ({
       const n = s.count;
       const radius = s.spread;
       const loose = 1 - 0.6 * s.tail;
-      const gather = 12 * loose * (0.2 + 0.8 * ease);
-      const pull = 30 * loose * (0.2 + 0.8 * ease);
+      const speedMult = 0.5 + 0.5 * s.speed;
+      const gather = 14 * loose * (0.2 + 0.8 * ease) * speedMult;
+      const pull = 36 * loose * (0.2 + 0.8 * ease) * speedMult;
       const band = Math.max(4, radius * 0.16);
       const w = view.width;
       const h = view.height;
@@ -561,7 +586,7 @@ const SwarmCursor = ({
       for (let i = 0; i < n; i++) {
         const x = px[i];
         const y = py[i];
-        const k = 10 * (1 - 0.6 * s.tail * heft[i]);
+        const k = 12 * (1 - 0.6 * s.tail * heft[i]) * speedMult;
         let ax = (sample(flowX, x, y) - vx[i]) * k;
         let ay = (sample(flowY, x, y) - vy[i]) * k;
         const cx = clampVal(Math.floor(x / gap) + 1, 0, gc - 1);
@@ -650,14 +675,14 @@ const SwarmCursor = ({
       if (!s.targets || !pointer.inside) return null;
       const rect = container.getBoundingClientRect();
       const element = document.elementFromPoint(rect.left + pointer.x, rect.top + pointer.y);
-      if (!element || !container.contains(element)) return null;
+      if (!element || element === canvas || element === container) return null;
       let match: Element | null = null;
       try {
         match = element.closest(s.targets);
       } catch {
         match = null;
       }
-      return match && container.contains(match) ? match : null;
+      return match;
     };
 
     const updateAnchor = (s: typeof settings, dt: number) => {
@@ -799,8 +824,8 @@ const SwarmCursor = ({
 
     const resize = () => {
       const s = settingsRef.current;
-      view.width = Math.max(1, container.clientWidth);
-      view.height = Math.max(1, container.clientHeight);
+      view.width = Math.max(1, container.clientWidth || window.innerWidth || 1);
+      view.height = Math.max(1, container.clientHeight || window.innerHeight || 1);
       view.ratio = Math.min(s.dpr || window.devicePixelRatio || 1, 2);
       canvas.width = Math.max(1, Math.round(view.width * view.ratio));
       canvas.height = Math.max(1, Math.round(view.height * view.ratio));
@@ -955,13 +980,20 @@ const SwarmCursor = ({
       if (extraBuffer) gl.deleteBuffer(extraBuffer);
       if (vao) gl.deleteVertexArray(vao);
       gl.deleteProgram(shader.program);
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
   }, []);
 
   useEffect(() => {
     wakeRef.current?.();
   });
+
+  if (!isSupported) {
+    return children ? (
+      <div className={`swarm-cursor-content${className ? ` ${className}` : ''}`} style={style}>
+        {children}
+      </div>
+    ) : null;
+  }
 
   return (
     <div
@@ -970,7 +1002,7 @@ const SwarmCursor = ({
       style={style}
     >
       <style>{`.${HIDDEN}, .${HIDDEN} * { cursor: none !important; }`}</style>
-      <canvas ref={canvasRef} className="swarm-cursor-canvas" aria-hidden="true" />
+      <canvas ref={canvasRef} className="swarm-cursor-canvas" style={{ background: 'transparent' }} aria-hidden="true" />
       {children ? <div className="swarm-cursor-content">{children}</div> : null}
     </div>
   );

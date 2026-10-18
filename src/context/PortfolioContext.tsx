@@ -5,7 +5,6 @@ import { INITIAL_PORTFOLIO_DATA } from '../data/defaultPortfolio';
 interface PortfolioContextType {
   portfolio: PortfolioData;
   isLoading: boolean;
-  submitContactForm: (msg: { name: string; email: string; subject?: string; message: string }) => Promise<boolean>;
 }
 
 const PortfolioContext = createContext<PortfolioContextType | undefined>(undefined);
@@ -83,7 +82,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         }
       };
 
-      eventSource.onerror = (e) => {
+      eventSource.onerror = () => {
         console.warn('SSE connection re-establishing...');
       };
     } catch (e) {
@@ -96,28 +95,11 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     };
   }, []);
 
-
-
-  // Submit Contact Message
-  const submitContactForm = async (msg: { name: string; email: string; subject?: string; message: string }): Promise<boolean> => {
-    try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(msg)
-      });
-      return res.ok;
-    } catch (err) {
-      return true;
-    }
-  };
-
   return (
     <PortfolioContext.Provider
       value={{
         portfolio,
-        isLoading,
-        submitContactForm
+        isLoading
       }}
     >
       {children}

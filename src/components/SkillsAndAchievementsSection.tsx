@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { motion } from 'motion/react';
-import { Award, ExternalLink, CheckCircle2, Shield, Code, Palette, Server, Database, Sparkles, Layout } from 'lucide-react';
+import { Award, ExternalLink, CheckCircle2, Code, Palette, Server, Database, Sparkles, GraduationCap } from 'lucide-react';
 
 export const SkillsAndAchievementsSection: React.FC = () => {
   const { portfolio } = usePortfolio();
@@ -33,7 +33,7 @@ export const SkillsAndAchievementsSection: React.FC = () => {
     <section id="skills" className="py-24 px-6 bg-black text-white border-t border-neutral-900 relative">
       <div className="max-w-7xl mx-auto space-y-24">
         
-        {/* SKILLS SECTION WITH INTERACTIVE PROGRESS BARS */}
+        {/* SKILLS SECTION */}
         <div>
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
             <div>
@@ -161,6 +161,63 @@ export const SkillsAndAchievementsSection: React.FC = () => {
             ))}
           </div>
         </div>
+
+        {/* EDUCATION SECTION */}
+        {portfolio.education && portfolio.education.length > 0 && (
+          <div>
+            <div className="mb-12">
+              <div className="text-xs font-mono uppercase tracking-widest text-neutral-500 mb-2">
+                04 // Academic Background & Pedigree
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-light tracking-tight text-white">
+                Education
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {portfolio.education.map((edu, idx) => (
+                <motion.div
+                  key={edu.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: idx * 0.1 }}
+                  className="p-6 bg-neutral-950 border border-neutral-800 rounded-xl hover:border-neutral-500 transition-all duration-300 flex flex-col justify-between group"
+                >
+                  <div>
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="w-10 h-10 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center justify-center p-2 text-cyan-400 group-hover:text-white transition-colors">
+                        <GraduationCap className="w-5 h-5" />
+                      </div>
+                      
+                      <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/80 border border-cyan-800/80 px-2.5 py-0.5 rounded-full">
+                        {edu.period}
+                      </span>
+                    </div>
+
+                    <h3 className="text-lg font-medium text-white mb-1.5 leading-snug group-hover:text-neutral-200">
+                      {edu.institution}
+                    </h3>
+
+                    <p className="text-xs font-mono text-neutral-400 mb-3">
+                      {edu.degree}
+                    </p>
+
+                    {edu.description && (
+                      <p className="text-xs font-light text-neutral-400 leading-relaxed">
+                        {edu.description}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="pt-4 mt-6 border-t border-neutral-900 flex items-center justify-between text-[11px] font-mono text-neutral-500">
+                    <span>{edu.boardOrCampus || 'CBSE'}</span>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        )}
 
       </div>
     </section>

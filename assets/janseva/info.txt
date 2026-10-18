@@ -1,0 +1,26 @@
+I’m excited to share JanSeva AI, a project my teammate Shreshtha Gupta and I built to completely rethink how citizens interact with public services.
+
+The Problem: 
+Navigating government portals whether applying for a passport, registering a vehicle, or paying a traffic challan is often fragmented and time-consuming. Finding the correct portal and hunting for specific options across cluttered UIs is a frustrating experience. We wanted to eliminate this bureaucratic friction.
+
+The Solution: 
+We built JanSeva AI as a centralized, conversational digital assistant. Instead of forcing users to navigate complex menus across multiple websites, we brought the services to them.
+
+Key Features: 
+->  Conversational UI: Replaces endless web pages with dynamic, interactive  
+      application  forms generated right inside the chat window. 
+->  Smart Context: Remembers your conversation history (like Challan IDs, 
+      application  references, or personal details) so you never have to type the  
+      same information twice.
+->  Instant Guidance: Cuts through complex jargon to provide accurate, 
+      easy-to-  understand procedural rules. 
+->  The "Smart Wrapper" Approach: The AI acts as an intelligent layer over  
+      existing government infrastructure. Users simply ask to apply or check a 
+      status, and the AI securely fetches or inserts data into the respective 
+      department's backend on their behalf   (demonstrated via two simulated   
+      department portals). This means we don't have to rebuild legacy systems,    
+      the AI just wraps around them seamlessly.
+
+While we didn’t make the cut this time around, we know it’s a prototype and it definitely has its flaws and edge cases to iron out. However, we set out to solve a very real, everyday problem—and we strongly believe this concept has immense potential to make government services truly accessible for everyone.
+
+Building this was an incredible learning experience. I’d love for my network to take a look! What are your thoughts on AI in public services? Any feedback, critiques, or advice on how we can improve the core idea would be greatly appreciated.

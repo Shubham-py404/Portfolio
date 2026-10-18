@@ -19,6 +19,116 @@
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
   }
+
+  /* Subtle dot grid pattern */
+  .bg-grid-pattern {
+    background-size: 36px 36px;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  }
+
+  /* Ambient atmospheric glow */
+  .radial-ambient-glow {
+    background: radial-gradient(circle at 75% 45%, rgba(59, 130, 246, 0.08) 0%, rgba(147, 51, 234, 0.05) 30%, transparent 70%);
+  }
+
+  /* Interactive Spring Hover Physics for Connect Cards */
+  .social-card {
+    transition: all 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  .social-card:hover {
+    transform: translateX(6px) translateY(-2px) scale(1.015);
+  }
+
+  .social-card .arrow-icon {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+  }
+
+  .social-card:hover .arrow-icon {
+    transform: translate(3px, -3px);
+    opacity: 1;
+  }
+
+  /* Copy tooltip animation */
+  .copy-toast {
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Leading glowing cursor animation */
+  @keyframes morphCursorGlow {
+    0%, 100% {
+      opacity: 1;
+      box-shadow: 0 0 12px #38bdf8, 0 0 24px rgba(56, 189, 248, 0.85);
+      transform: scaleY(1);
+    }
+    50% {
+      opacity: 0.2;
+      box-shadow: 0 0 2px rgba(56, 189, 248, 0.2);
+      transform: scaleY(0.85);
+    }
+  }
+
+  .animate-morph-cursor {
+    display: inline-block;
+    animation: morphCursorGlow 0.85s ease-in-out infinite;
+    will-change: opacity, transform, box-shadow;
+  }
+
+  /* Colour tokens — override to re-skin the effect:
+     --ink    main text colour (defaults to currentColor)
+     --ink-2  primary accent   --ink-3  secondary accent */
+  :root {
+    --ink: currentColor;
+    --ink-2: #FF4FD8;
+    --ink-3: #4FF8FF;
+  }
+
+  @property --chars {
+    syntax: '<integer>';
+    inherits: true;
+    initial-value: 10;
+  }
+
+  @property --i {
+    syntax: '<integer>';
+    inherits: true;
+    initial-value: 10;
+  }
+
+  /* 03 Teletype — typewriter with blinking caret (word must match the ch width) */
+  .fx-typewriter {
+    --chars: var(--i, 10);
+    box-sizing: content-box; /* the caret sits outside the character-count width */
+    font: 600 24px/1.2 "JetBrains Mono", monospace;
+    letter-spacing: 0;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    width: 10ch; /* = number of characters typed */
+    width: calc(var(--chars, 10) * 1ch);
+    border-right: .55ch solid var(--ink-2);
+    animation: fx-type 3.6s steps(10) infinite,
+               fx-caret .65s steps(1) infinite;
+    animation: fx-type 3.6s steps(var(--chars, 10)) infinite,
+               fx-caret .65s steps(1) infinite;
+  }
+
+  @keyframes fx-type {
+    0%, 8%    { width: 0; }
+    55%, 100% { width: calc(var(--chars, 10) * 1ch); }
+  }
+
+  @keyframes fx-caret {
+    50% { border-color: transparent; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fx-typewriter {
+      animation: none;
+      width: auto;
+      border-right-color: transparent;
+    }
+  }
 }
 
 html {

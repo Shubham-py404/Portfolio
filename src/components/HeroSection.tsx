@@ -1,8 +1,9 @@
 import React from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { motion } from 'motion/react';
-import my_img from '../../assets/images/img-shubham.jpeg'
-import { ArrowDown, MapPin, Mail, Github, Linkedin, Twitter } from 'lucide-react';
+import my_img from '../../assets/images/img-shubham.jpeg';
+import { ArrowDown, Mail, Github, Linkedin, Twitter } from 'lucide-react';
+import { LeetCodeIcon } from './LeetCodeIcon';
 
 export const HeroSection: React.FC = () => {
   const { portfolio } = usePortfolio();
@@ -15,11 +16,10 @@ export const HeroSection: React.FC = () => {
     }
   };
 
-
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center pt-28 pb-16 px-6 bg-black text-white overflow-hidden">
+    <section className="relative min-h-screen flex flex-col items-center justify-center py-16 px-6 bg-black text-white overflow-hidden">
       {/* Delicate background grid overlay */}
-      <div className="absolute inset-0 bg-[radial-gradient(#333_1px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(#333_1px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none z-0" />
 
       <div className="max-w-4xl mx-auto w-full flex flex-col items-center text-center z-10">
         
@@ -41,15 +41,21 @@ export const HeroSection: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* User Name */}
-        <motion.h1
+        {/* User Name - Animated Pure CSS Teletype Effect */}
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-          className="text-4xl sm:text-6xl md:text-7xl font-semibold sm:font-medium tracking-tight text-white mb-4"
+          className="mb-4 flex flex-col items-center justify-center"
         >
-          {profile.name || "Shubham Bansal"}
-        </motion.h1>
+          <h1 className="sr-only">{profile.name || "Shubham Bansal"}</h1>
+          <div
+            className="fx-typewriter"
+            style={{ '--i': (profile.name || "Shubham Bansal").length, '--chars': (profile.name || "Shubham Bansal").length } as React.CSSProperties}
+          >
+            {profile.name || "Shubham Bansal"}
+          </div>
+        </motion.div>
 
         {/* Current Occupation Badge */}
         <motion.div
@@ -71,7 +77,7 @@ export const HeroSection: React.FC = () => {
           transition={{ duration: 0.8, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
           className="text-base sm:text-lg md:text-xl text-neutral-100 font-normal max-w-3xl leading-relaxed mb-8 opacity-95 text-center drop-shadow-sm"
         >
-          {profile.bio || "Dynamic Computer Science student with strong Data Structures & Algorithms expertise. Proficient in C/C++, Java, Python, and SQL, leveraging AI tools to accelerate development and build innovative applications."}
+          {profile.bio || "Dynamic Computer Science student with strong Data Structures & Algorithms expertise. Proficient in C/C++, Java, Python, and SQL, leveraging AI tools to accelerate development. Passionate about Artificial Intelligence with the future goal of pursuing a Master's in Computer Science."}
         </motion.p>
 
         {/* Meta Info & Social Links */}
@@ -81,16 +87,11 @@ export const HeroSection: React.FC = () => {
           transition={{ duration: 0.8, delay: 0.45 }}
           className="flex flex-wrap items-center justify-center gap-6 text-xs font-mono text-neutral-500 mb-12"
         >
-          {profile.location && (
-            <span className="flex items-center space-x-1.5">
-              <MapPin className="w-3.5 h-3.5 text-neutral-400" />
-              <span>{profile.location}</span>
-            </span>
-          )}
           {profile.email && (
             <a
               href={`mailto:${profile.email}`}
               className="flex items-center space-x-1.5 hover:text-white transition-colors"
+              title="Email"
             >
               <Mail className="w-3.5 h-3.5 text-neutral-400" />
               <span>{profile.email}</span>
@@ -99,17 +100,22 @@ export const HeroSection: React.FC = () => {
           
           <div className="flex items-center space-x-3 pl-2 border-l border-neutral-800">
             {profile.githubUrl && (
-              <a href={profile.githubUrl} target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
+              <a href={profile.githubUrl} target="_blank" rel="noreferrer" className="hover:text-white transition-colors" title="GitHub">
                 <Github className="w-4 h-4" />
               </a>
             )}
             {profile.linkedinUrl && (
-              <a href={profile.linkedinUrl} target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
+              <a href={profile.linkedinUrl} target="_blank" rel="noreferrer" className="hover:text-white transition-colors" title="LinkedIn">
                 <Linkedin className="w-4 h-4" />
               </a>
             )}
+            {profile.leetcodeUrl && (
+              <a href={profile.leetcodeUrl} target="_blank" rel="noreferrer" className="hover:text-white transition-colors" title="LeetCode (300+ Problems)">
+                <LeetCodeIcon className="w-4 h-4" />
+              </a>
+            )}
             {profile.twitterUrl && (
-              <a href={profile.twitterUrl} target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
+              <a href={profile.twitterUrl} target="_blank" rel="noreferrer" className="hover:text-white transition-colors" title="X (Twitter)">
                 <Twitter className="w-4 h-4" />
               </a>
             )}

@@ -1,0 +1,10 @@
+🚀 I recently built a Patreon clone as part of the Sigma Web Development Series by Code With Harry.
+ Even though it’s a simplified version, this project helped me learn a lot of real-world concepts, including:
+🔹 MongoDB setup and creating schemas for the app
+ 🔹 Integrating a payment gateway with Razorpay
+ 🔹 Implementing NextAuth for authentication
+ 🔹 Understanding routing and structure in Next.js
+ 🔹 Putting everything together into a working full-stack app
+This project is far from a full Patreon clone, but it was a great hands-on experience that strengthened my understanding of full-stack development.
+Excited to keep building and learning! ✨
+#WebDevelopment #NextJS #MongoDB #Razorpay #NextAuth #FullStack #LearningJourney #CodeWithHarry #SigmaWebDev

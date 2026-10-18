@@ -1,14 +1,13 @@
+import http from 'http';
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
-import { fileURLToPath } from 'url';
 import { createServer as createViteServer } from 'vite';
 import { INITIAL_PORTFOLIO_DATA } from './src/data/defaultPortfolio.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+console.log('🚀 Starting portfolio server...');
 
-const PORT = parseInt(process.env.PORT || '3001', 10);
+const DEFAULT_PORT = parseInt(process.env.PORT || '3001', 10);
 const DATA_DIR = path.join(process.cwd(), 'data');
 const DATA_FILE = path.join(DATA_DIR, 'portfolio.json');
 
@@ -61,6 +60,26 @@ function broadcastUpdate(data: any) {
 
 async function startServer() {
   const app = express();
+  const server = http.createServer(app);
+
+  // Request logging middleware for visible server activity
+  app.use((req, res, next) => {
+    const start = Date.now();
+    const url = req.originalUrl || req.url;
+    res.on('finish', () => {
+      // Filter out internal noisy asset polling so user sees real requests clearly
+      if (
+        !url.startsWith('/@') &&
+        !url.includes('node_modules') &&
+        !url.endsWith('.map') &&
+        !url.startsWith('/src/')
+      ) {
+        const time = Date.now() - start;
+        console.log(`[${new Date().toLocaleTimeString()}] ${req.method} ${url} → ${res.statusCode} (${time}ms)`);
+      }
+    });
+    next();
+  });
 
   app.use(express.json({ limit: '20mb' }));
 
@@ -144,11 +163,35 @@ async function startServer() {
 
   // --- Vite & Static Handling ---
   if (process.env.NODE_ENV !== 'production') {
+    const isHmrDisabled = process.env.DISABLE_HMR === 'true';
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      server: {
+        middlewareMode: true,
+        hmr: isHmrDisabled ? false : { server },
+      },
       appType: 'spa',
     });
+
+    // Vite transforms and handles modules/assets
     app.use(vite.middlewares);
+
+    // Dev SPA HTML Fallback: transforms index.html with Vite HMR client & scripts
+    app.use('*', async (req, res, next) => {
+      const url = req.originalUrl;
+      // Skip API routes
+      if (url.startsWith('/api')) {
+        return next();
+      }
+      try {
+        const indexPath = path.join(process.cwd(), 'index.html');
+        let template = fs.readFileSync(indexPath, 'utf-8');
+        template = await vite.transformIndexHtml(url, template);
+        res.status(200).set({ 'Content-Type': 'text/html' }).end(template);
+      } catch (e) {
+        vite.ssrFixStacktrace(e as Error);
+        next(e);
+      }
+    });
   } else {
     const distPath = path.join(process.cwd(), 'dist');
     app.use(express.static(distPath));
@@ -157,9 +200,39 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`\n  ➜  Local: http://localhost:${PORT}\n`);
+  // Graceful port fallback
+  const host = '0.0.0.0';
+  let port = DEFAULT_PORT;
+
+  function listen(targetPort: number) {
+    server.listen(targetPort, host, () => {
+      console.log(`\n  ➜  Local:   http://localhost:${targetPort}`);
+      console.log(`  ➜  Network: http://127.0.0.1:${targetPort}\n`);
+      console.log(`  ✓ Ready to accept connections. Logs will appear below:\n`);
+    });
+  }
+
+  server.on('error', (err: any) => {
+    if (err.code === 'EADDRINUSE') {
+      console.warn(`⚠️  Port ${port} is currently in use. Trying port ${port + 1}...`);
+      port += 1;
+      setTimeout(() => {
+        listen(port);
+      }, 200);
+    } else {
+      console.error('Server error:', err);
+    }
   });
+
+  const shutdown = () => {
+    server.close(() => {
+      process.exit(0);
+    });
+  };
+  process.on('SIGINT', shutdown);
+  process.on('SIGTERM', shutdown);
+
+  listen(port);
 }
 
 startServer();

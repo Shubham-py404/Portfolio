@@ -1,0 +1,14 @@
+Project Complete: A custom UNIX-style Shell built entirely in C++! 
+
+Before jumping into the AI field, I wanted to build a rock-solid foundation in low-level systems programming. Building a custom terminal shell from the ground up was the perfect challenge.
+
+Under the hood, I learned and implemented: 
+
+- The core REPL (Read-Eval-Print Loop) workflow. 
+- Process generation and memory replacement using fork(), execvp(), and 
+   waitpid(). 
+- Custom native built-ins mapped via function pointers. 
+- Modular C++ architecture: writing headers, defining macros, and compiling 
+  multi-file projects.
+
+The shell is currently a basic prototype, but the architecture is completely customizable for future enhancements and integration.
