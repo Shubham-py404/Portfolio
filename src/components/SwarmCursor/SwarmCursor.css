@@ -22,3 +22,21 @@
   height: 100%;
   z-index: 1;
 }
+
+.swarm-fixed-cursor {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  pointer-events: none !important;
+  z-index: 40 !important;
+}
+
+.swarm-fixed-cursor .swarm-cursor-canvas {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  pointer-events: none !important;
+}
+

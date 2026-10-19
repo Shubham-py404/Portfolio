@@ -1,147 +1,455 @@
 @import "tailwindcss";
 
-@layer base {
-  body {
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  }
-  code, kbd, samp, pre, .font-mono {
-    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  }
+/* ─────────────────────────────────────────────────────────────
+   ARTCRAFT DESIGN TOKENS & TYPED HOUDINI PROPERTIES
+   Drafting Parchment (Light) & Industrial Obsidian (Dark)
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* ── Light Mode (Drafting Parchment) ── */
+  --bg: #f2f1ee;
+  --bg-raised: #faf9f7;
+  --bg-sunken: #e9e8e4;
+  --ink: #101014;
+  --ink-strong: #000000;
+  --muted: rgba(16, 16, 20, 0.62);
+  --faint: rgba(16, 16, 20, 0.38);
+  --line: rgba(16, 16, 20, 0.16);
+  --line-strong: rgba(16, 16, 20, 0.45);
+  --accent: #2d81ff;
+  --accent-ink: #1659c4;
+  --invert-bg: #101014;
+  --invert-fg: #f2f1ee;
+  --danger: #b3261e;
+  --scanline: rgba(16, 16, 20, 0.03);
+
+  /* ── Legacy Aliases (Backwards Compatibility) ── */
+  --color-bg: var(--bg);
+  --color-surface: var(--bg-raised);
+  --color-text: var(--ink);
+  --color-muted: var(--muted);
+  --color-border: var(--line);
+
+  /* ── Typography Families ── */
+  --font-display: 'Archivo', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-mono: 'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
+  --font-sans: 'Inter', 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-body: var(--font-sans);
+
+  /* ── Type Scale ── */
+  --text-hero-size: clamp(2.5rem, 5.5vw, 4.75rem);
+  --text-hero-weight: 620;
+  --text-hero-lh: 1.05;
+  --text-hero-ls: -0.03em;
+
+  --text-h2-size: clamp(1.75rem, 3.5vw, 3rem);
+  --text-h2-weight: 620;
+  --text-h2-lh: 1.15;
+  --text-h2-ls: -0.02em;
+
+  --text-body-size: 1rem;
+  --text-body-weight: 400;
+  --text-body-lh: 1.6;
+  --text-body-ls: 0;
+
+  --text-small-size: 0.8125rem;
+  --text-small-weight: 400;
+  --text-small-lh: 1.5;
+  --text-small-ls: 0;
+
+  --text-mono-size: 0.6875rem;
+  --text-mono-weight: 500;
+  --text-mono-lh: 1.4;
+  --text-mono-ls: 0.15em;
+
+  /* ── Space (base unit: 4px) ── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+  --space-32: 128px;
+
+  /* ── Motion ── */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 120ms;
+  --duration-base: 400ms;
+  --duration-slow: 800ms;
+
+  --radius: 0px;
+  color-scheme: light;
 }
 
-@layer utilities {
-  /* Hide scrollbar for Chrome, Safari and Opera */
-  .scrollbar-none::-webkit-scrollbar {
-    display: none;
-  }
-  /* Hide scrollbar for IE, Edge and Firefox */
-  .scrollbar-none {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-  }
-
-  /* Subtle dot grid pattern */
-  .bg-grid-pattern {
-    background-size: 36px 36px;
-    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
-  }
-
-  /* Ambient atmospheric glow */
-  .radial-ambient-glow {
-    background: radial-gradient(circle at 75% 45%, rgba(59, 130, 246, 0.08) 0%, rgba(147, 51, 234, 0.05) 30%, transparent 70%);
-  }
-
-  /* Interactive Spring Hover Physics for Connect Cards */
-  .social-card {
-    transition: all 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  
-  .social-card:hover {
-    transform: translateX(6px) translateY(-2px) scale(1.015);
-  }
-
-  .social-card .arrow-icon {
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
-  }
-
-  .social-card:hover .arrow-icon {
-    transform: translate(3px, -3px);
-    opacity: 1;
-  }
-
-  /* Copy tooltip animation */
-  .copy-toast {
-    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  /* Leading glowing cursor animation */
-  @keyframes morphCursorGlow {
-    0%, 100% {
-      opacity: 1;
-      box-shadow: 0 0 12px #38bdf8, 0 0 24px rgba(56, 189, 248, 0.85);
-      transform: scaleY(1);
-    }
-    50% {
-      opacity: 0.2;
-      box-shadow: 0 0 2px rgba(56, 189, 248, 0.2);
-      transform: scaleY(0.85);
-    }
-  }
-
-  .animate-morph-cursor {
-    display: inline-block;
-    animation: morphCursorGlow 0.85s ease-in-out infinite;
-    will-change: opacity, transform, box-shadow;
-  }
-
-  /* Colour tokens — override to re-skin the effect:
-     --ink    main text colour (defaults to currentColor)
-     --ink-2  primary accent   --ink-3  secondary accent */
-  :root {
-    --ink: currentColor;
-    --ink-2: #FF4FD8;
-    --ink-3: #4FF8FF;
-  }
-
-  @property --chars {
-    syntax: '<integer>';
-    inherits: true;
-    initial-value: 10;
-  }
-
-  @property --i {
-    syntax: '<integer>';
-    inherits: true;
-    initial-value: 10;
-  }
-
-  /* 03 Teletype — typewriter with blinking caret (word must match the ch width) */
-  .fx-typewriter {
-    --chars: var(--i, 10);
-    box-sizing: content-box; /* the caret sits outside the character-count width */
-    font: 600 24px/1.2 "JetBrains Mono", monospace;
-    letter-spacing: 0;
-    color: var(--ink);
-    white-space: nowrap;
-    overflow: hidden;
-    width: 10ch; /* = number of characters typed */
-    width: calc(var(--chars, 10) * 1ch);
-    border-right: .55ch solid var(--ink-2);
-    animation: fx-type 3.6s steps(10) infinite,
-               fx-caret .65s steps(1) infinite;
-    animation: fx-type 3.6s steps(var(--chars, 10)) infinite,
-               fx-caret .65s steps(1) infinite;
-  }
-
-  @keyframes fx-type {
-    0%, 8%    { width: 0; }
-    55%, 100% { width: calc(var(--chars, 10) * 1ch); }
-  }
-
-  @keyframes fx-caret {
-    50% { border-color: transparent; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .fx-typewriter {
-      animation: none;
-      width: auto;
-      border-right-color: transparent;
-    }
-  }
+/* ── Dark Mode (Industrial Slate / Obsidian) ── */
+:root[data-theme="dark"],
+[data-theme="dark"] {
+  --bg: #121316;
+  --bg-raised: #101014;
+  --bg-sunken: #060607;
+  --ink: #f2f1ee;
+  --ink-strong: #ffffff;
+  --muted: rgba(242, 241, 238, 0.6);
+  --faint: rgba(242, 241, 238, 0.35);
+  --line: rgba(242, 241, 238, 0.15);
+  --line-strong: rgba(242, 241, 238, 0.4);
+  --accent: #2d81ff;
+  --accent-ink: #74aaff;
+  --invert-bg: #ffffff;
+  --invert-fg: #0b0b0c;
+  --danger: #ff6259;
+  --scanline: rgba(255, 255, 255, 0.025);
+  color-scheme: dark;
 }
 
+/* ── CSS Houdini Typed Properties for Silky Smooth 400ms Theme Interpolation ── */
+@property --bg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #121316;
+}
+@property --bg-raised {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #101014;
+}
+@property --bg-sunken {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #060607;
+}
+@property --ink {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #f2f1ee;
+}
+@property --ink-strong {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #ffffff;
+}
+@property --muted {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(242, 241, 238, 0.6);
+}
+@property --faint {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(242, 241, 238, 0.35);
+}
+@property --line {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(242, 241, 238, 0.15);
+}
+@property --line-strong {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(242, 241, 238, 0.4);
+}
+@property --accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #2d81ff;
+}
+@property --invert-bg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #ffffff;
+}
+@property --invert-fg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #0b0b0c;
+}
+@property --scanline {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(255, 255, 255, 0.025);
+}
+
+/* Theme switch transition helper */
+html.theme-anim {
+  transition: --bg .4s ease,
+              --bg-raised .4s ease,
+              --bg-sunken .4s ease,
+              --ink .4s ease,
+              --ink-strong .4s ease,
+              --muted .4s ease,
+              --faint .4s ease,
+              --line .4s ease,
+              --line-strong .4s ease,
+              --accent .4s ease,
+              --invert-bg .4s ease,
+              --invert-fg .4s ease,
+              --scanline .4s ease !important;
+}
+
+/* Prevent layout or inner child element transition jitter during theme animation */
+html.theme-anim body * {
+  transition-duration: 0s !important;
+}
+
+/* ── Base Styles ── */
 html {
-  scroll-behavior: smooth;
-  background-color: #000000;
-  color: #ffffff;
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
 }
 
 body {
-  background-color: #000000;
-  color: #ffffff;
-  overflow-x: hidden;
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  overflow-x: clip;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ── Typography Classes ── */
+.font-display {
+  font-family: var(--font-display);
+  font-weight: 620;
+  font-stretch: 118%;
+  letter-spacing: -0.03em;
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.font-sans {
+  font-family: var(--font-sans);
+}
+
+/* ── ArtCraft HUD & Blueprint Classes ── */
+.hud-label {
+  font-family: var(--font-mono);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-size: 0.6875rem; /* 11px */
+  font-weight: 500;
+  line-height: 1;
+}
+
+/* CAD Crosshairs / Intersection Ticks (11px x 11px) */
+.tick {
+  pointer-events: none;
+  width: 11px;
+  height: 11px;
+  position: absolute;
+  z-index: 20;
+}
+
+.tick:before,
+.tick:after {
+  content: "";
+  background: var(--line-strong);
+  position: absolute;
+}
+
+.tick:before {
+  width: 1px;
+  top: 0;
+  bottom: 0;
+  left: 5px;
+}
+
+.tick-half:before {
+  top: 5px;
+}
+
+.tick:after {
+  height: 1px;
+  top: 5px;
+  left: 0;
+  right: 0;
+}
+
+/* Corner positions */
+.tick-tl { top: -5px; left: -5px; }
+.tick-tr { top: -5px; right: -5px; }
+.tick-bl { bottom: -5px; left: -5px; }
+.tick-br { bottom: -5px; right: -5px; }
+
+/* ── Tactile Negative Inversion (.invert-block) ── */
+.invert-block {
+  transition: background-color 0.12s linear, color 0.12s linear, border-color 0.12s linear, opacity 0.12s linear;
+}
+
+.invert-block:hover,
+.invert-block[data-active="true"] {
+  background-color: var(--invert-bg) !important;
+  color: var(--invert-fg) !important;
+  border-color: var(--invert-bg) !important;
+}
+
+/* ── Mechanical Digit Roller for CAD Ruler ── */
+.ruler-digits {
+  height: 1em;
+  line-height: 1;
+  display: inline-flex;
+  overflow: hidden;
+}
+
+.ruler-digit-col {
+  flex-direction: column;
+  transition: transform 0.28s cubic-bezier(0.2, 0.9, 0.2, 1);
+  display: flex;
+}
+
+.ruler-digit-col > span {
+  height: 1em;
+  display: block;
+}
+
+/* ── Blueprint Grid & Scanline Texture ── */
+.bg-blueprint {
+  background-image: 
+    linear-gradient(to right, var(--line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+.bg-scanline {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 2px,
+    var(--scanline) 2px,
+    var(--scanline) 4px
+  );
+}
+
+/* ── Utilities ── */
+@layer utilities {
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .border-line {
+    border-color: var(--line);
+  }
+  .border-line-strong {
+    border-color: var(--line-strong);
+  }
+  .bg-canvas {
+    background-color: var(--bg);
+  }
+  .bg-surface {
+    background-color: var(--bg-raised);
+  }
+  .bg-sunken {
+    background-color: var(--bg-sunken);
+  }
+  .text-ink {
+    color: var(--ink);
+  }
+  .text-ink-strong {
+    color: var(--ink-strong);
+  }
+  .text-faint {
+    color: var(--faint);
+  }
+}
+
+.hover-fade {
+  transition: color var(--duration-fast) var(--ease),
+              opacity var(--duration-fast) var(--ease),
+              border-color var(--duration-fast) var(--ease),
+              background-color var(--duration-fast) var(--ease);
+}
+
+/* ── Fixed Swarm Cursor Overlay ── */
+.swarm-fixed-cursor {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  pointer-events: none !important;
+  z-index: 35 !important;
+}
+
+.swarm-fixed-cursor .swarm-cursor-canvas {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  pointer-events: none !important;
+}
+
+/* ── Train Marquee Animations ── */
+@keyframes train-slide-ltr {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0%, 0, 0);
+  }
+}
+
+@keyframes train-slide-rtl {
+  0% {
+    transform: translate3d(0%, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-train-ltr {
+  display: flex;
+  width: max-content;
+  animation: train-slide-ltr 35s linear infinite;
+  will-change: transform;
+}
+
+.animate-train-ltr:hover {
+  animation-play-state: paused;
+}
+
+.animate-train-rtl {
+  display: flex;
+  width: max-content;
+  animation: train-slide-rtl 35s linear infinite;
+  will-change: transform;
+}
+
+.animate-train-rtl:hover {
+  animation-play-state: paused;
+}
+
+/* ── prefers-reduced-motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

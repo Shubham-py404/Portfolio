@@ -211,7 +211,7 @@ const SwarmCursor = ({
     color: color || ink,
     accentColor: accentColor || color || ink,
     spread: clampVal(spread, 20, 400),
-    speed: clampVal(speed, 0, 4),
+    speed: clampVal(speed, 0, 10),
     swirl: clampVal(swirl, 0, 1),
     tail: clampVal(tail, 0, 1),
     trail: clampVal(trail, 0, 3),
@@ -575,8 +575,8 @@ const SwarmCursor = ({
       const radius = s.spread;
       const loose = 1 - 0.6 * s.tail;
       const speedMult = 0.5 + 0.5 * s.speed;
-      const gather = 14 * loose * (0.2 + 0.8 * ease) * speedMult;
-      const pull = 36 * loose * (0.2 + 0.8 * ease) * speedMult;
+      const gather = 26 * loose * (0.2 + 0.8 * ease) * speedMult;
+      const pull = 75 * loose * (0.2 + 0.8 * ease) * speedMult;
       const band = Math.max(4, radius * 0.16);
       const w = view.width;
       const h = view.height;
@@ -586,7 +586,7 @@ const SwarmCursor = ({
       for (let i = 0; i < n; i++) {
         const x = px[i];
         const y = py[i];
-        const k = 12 * (1 - 0.6 * s.tail * heft[i]) * speedMult;
+        const k = 16 * (1 - 0.5 * s.tail * heft[i]) * speedMult;
         let ax = (sample(flowX, x, y) - vx[i]) * k;
         let ay = (sample(flowY, x, y) - vy[i]) * k;
         const cx = clampVal(Math.floor(x / gap) + 1, 0, gc - 1);
@@ -957,6 +957,7 @@ const SwarmCursor = ({
     window.addEventListener('pointerdown', onPointerDown as EventListener, { passive: true });
     window.addEventListener('pointerup', onPointerUp as EventListener, { passive: true });
     window.addEventListener('pointercancel', onPointerUp as EventListener, { passive: true });
+    window.addEventListener('scroll', wake, { passive: true });
     document.documentElement.addEventListener('pointerleave', onPointerLeave);
     document.addEventListener('visibilitychange', onVisibility);
     resize();
@@ -972,6 +973,7 @@ const SwarmCursor = ({
       window.removeEventListener('pointerdown', onPointerDown as EventListener);
       window.removeEventListener('pointerup', onPointerUp as EventListener);
       window.removeEventListener('pointercancel', onPointerUp as EventListener);
+      window.removeEventListener('scroll', wake);
       document.documentElement.removeEventListener('pointerleave', onPointerLeave);
       document.removeEventListener('visibilitychange', onVisibility);
       if (cornerBuffer) gl.deleteBuffer(cornerBuffer);

@@ -1,9 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { Project, MediaItem } from '../types';
-import { motion, AnimatePresence } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import play_button from '../../assets/play-button.svg';
 import { ExternalLink, Github, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { SectionDivider } from './SectionDivider';
 
 import textToImageImg from '../../assets/text-to-image/image.png';
 import jansevaImg1 from '../../assets/janseva/image.png';
@@ -20,13 +21,12 @@ const resolveMediaUrl = (url?: string): string => {
   return ASSET_MAP[url] || url;
 };
 
-// Single Project Card with Media Carousel
+// Single Blueprint-Styled Project Card
 const ProjectCard: React.FC<{
   project: Project;
-  idx: number;
+  index: number;
   onOpenModal: (project: Project, mediaItem?: MediaItem) => void;
-}> = ({ project, idx, onOpenModal }) => {
-  // Normalize media items: prioritize explicit media list, then videoUrl, then thumbnail
+}> = ({ project, index, onOpenModal }) => {
   const mediaList: MediaItem[] = React.useMemo(() => {
     if (project.media && project.media.length > 0) {
       return project.media;
@@ -64,51 +64,68 @@ const ProjectCard: React.FC<{
     setActiveMediaIdx((prev) => (prev < totalMedia - 1 ? prev + 1 : 0));
   };
 
+  const formattedIndex = (index + 1).toString().padStart(2, '0');
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6, delay: idx * 0.1 }}
-      className="min-w-[320px] sm:min-w-[420px] max-w-[440px] snap-start bg-neutral-950 border border-neutral-800 rounded-xl overflow-hidden group hover:border-neutral-500 transition-all duration-500 flex flex-col justify-between"
+    <div
+      data-swarm-target="true"
+      className="relative shrink-0 min-w-[320px] sm:min-w-[420px] max-w-[440px] snap-start flex flex-col justify-between border border-line bg-surface hover:border-line-strong transition-all duration-300 group"
     >
+      {/* CAD Crosshair Ticks at Card Corners */}
+      <span className="tick tick-tl -top-[5px] -left-[5px]" aria-hidden="true" />
+      <span className="tick tick-tr -top-[5px] -right-[5px]" aria-hidden="true" />
+      <span className="tick tick-bl -bottom-[5px] -left-[5px]" aria-hidden="true" />
+      <span className="tick tick-br -bottom-[5px] -right-[5px]" aria-hidden="true" />
+
       <div>
-        {/* Card Media Container with Top-Right Counter & Left/Right Arrows */}
-        <div className="relative aspect-video bg-neutral-900 overflow-hidden">
-          {/* Top-Right Component: 1/3 or 2/3 with Left & Right Arrow UI Buttons */}
+        {/* Card Header Telemetry */}
+        <div className="flex items-center justify-between px-4 py-2 border-b border-line bg-canvas/60 text-muted select-none">
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 bg-accent" />
+            <span className="hud-label text-[10px] tracking-widest text-ink">
+              MOD // {formattedIndex}
+            </span>
+          </div>
+
+          <span className="hud-label text-[10px] text-faint tracking-widest">
+            {project.tags[0] || 'DEV'}
+          </span>
+        </div>
+
+        {/* Media Container */}
+        <div className="relative aspect-video overflow-hidden bg-sunken border-b border-line">
+          {/* Media Counter */}
           {totalMedia > 1 ? (
-            <div className="absolute top-3 right-3 z-30 flex items-center bg-black/85 backdrop-blur-md border border-neutral-700/80 rounded-full py-0.5 px-2 text-[11px] font-mono text-neutral-300 shadow-xl select-none">
+            <div className="absolute top-2.5 right-2.5 z-30 flex items-center bg-canvas/90 backdrop-blur-sm border border-line px-1.5 py-0.5 select-none text-[10px] font-mono text-ink">
               <button
                 type="button"
                 onClick={handlePrevMedia}
-                className="w-5 h-5 flex items-center justify-center rounded-full hover:bg-neutral-800 hover:text-white transition-colors cursor-pointer"
-                title="Previous media"
+                className="w-4 h-4 flex items-center justify-center hover:text-accent cursor-pointer"
                 aria-label="Previous media"
               >
-                <ChevronLeft className="w-3.5 h-3.5" />
+                <ChevronLeft className="w-3 h-3" />
               </button>
 
-              <span className="font-semibold text-white tracking-widest px-1.5 text-[10px]">
+              <span className="px-1 text-muted">
                 {activeMediaIdx + 1}/{totalMedia}
               </span>
 
               <button
                 type="button"
                 onClick={handleNextMedia}
-                className="w-5 h-5 flex items-center justify-center rounded-full hover:bg-neutral-800 hover:text-white transition-colors cursor-pointer"
-                title="Next media"
+                className="w-4 h-4 flex items-center justify-center hover:text-accent cursor-pointer"
                 aria-label="Next media"
               >
-                <ChevronRight className="w-3.5 h-3.5" />
+                <ChevronRight className="w-3 h-3" />
               </button>
             </div>
           ) : (
-            <div className="absolute top-3 right-3 z-30 bg-black/75 backdrop-blur-sm border border-neutral-800/80 rounded-full py-0.5 px-2 text-[10px] font-mono text-neutral-400 shadow-md">
-              1/1
+            <div className="absolute top-2.5 right-2.5 z-30 px-2 py-0.5 bg-canvas/90 backdrop-blur-sm border border-line text-[10px] font-mono text-muted select-none">
+              01/01
             </div>
           )}
 
-          {/* Active Media Renderer */}
+          {/* Active Media */}
           {currentMedia.type === 'video' ? (
             <div
               className="relative w-full h-full cursor-pointer overflow-hidden group/media"
@@ -129,48 +146,45 @@ const ProjectCard: React.FC<{
                   muted
                   loop
                   playsInline
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 filter grayscale group-hover:grayscale-0"
+                  className="w-full h-full object-cover grayscale contrast-105 group-hover/media:grayscale-0 transition-all duration-300"
                 />
               )}
-              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
-                <div className="w-14 h-14 rounded-full bg-black/70 border border-white/30 backdrop-blur-md flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:border-white transition-all duration-300">
-                  <img src={play_button} alt="Play video" className="w-6 h-6 translate-x-0.5 object-contain" />
+              <div className="absolute inset-0 bg-ink/20 group-hover/media:bg-transparent flex items-center justify-center transition-colors duration-200">
+                <div className="w-12 h-12 flex items-center justify-center bg-canvas/80 border border-line shadow-sm">
+                  <img src={play_button} alt="Play video" className="w-5 h-5 translate-x-0.5 object-contain" />
                 </div>
               </div>
             </div>
           ) : (
             <div
-              className="relative w-full h-full cursor-pointer overflow-hidden"
+              className="relative w-full h-full cursor-pointer overflow-hidden group/media"
               onClick={() => onOpenModal(project, currentMedia)}
             >
               <img
                 src={resolveMediaUrl(currentMedia.url)}
                 alt={currentMedia.title || project.title}
-                className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+                className="w-full h-full object-cover grayscale contrast-105 group-hover/media:grayscale-0 transition-all duration-300"
               />
-              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-all duration-300" />
             </div>
           )}
         </div>
 
         {/* Card Content */}
         <div className="p-6">
-          <div className="flex items-start justify-between mb-3">
-            <h3 className="text-xl font-medium text-white group-hover:text-neutral-200 transition-colors">
-              {project.title}
-            </h3>
-          </div>
+          <h3 className="font-display text-lg text-ink-strong mb-2 leading-tight">
+            {project.title}
+          </h3>
 
-          <p className="text-sm font-light text-neutral-400 line-clamp-4 leading-relaxed mb-6">
+          <p className="text-xs sm:text-sm text-muted leading-relaxed line-clamp-3 mb-6 font-sans">
             {project.description}
           </p>
 
-          {/* Tech Tags */}
-          <div className="flex flex-wrap gap-2 mb-4">
+          {/* Tags — Tactile Monospace Chips */}
+          <div className="flex flex-wrap gap-1.5">
             {project.tags.map((tag, tIdx) => (
               <span
                 key={tIdx}
-                className="text-[11px] font-mono px-2.5 py-1 rounded bg-neutral-900 border border-neutral-800 text-neutral-300"
+                className="invert-block px-2 py-0.5 border border-line bg-canvas text-muted text-[10px] font-mono tracking-wider"
               >
                 {tag}
               </span>
@@ -178,7 +192,33 @@ const ProjectCard: React.FC<{
           </div>
         </div>
       </div>
-    </motion.div>
+
+      {/* Card Footer Action Bar */}
+      <div className="px-6 pb-6 pt-0 flex items-center gap-3">
+        {project.demoUrl && (
+          <a
+            href={project.demoUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="invert-block inline-flex items-center gap-1.5 px-3 py-1.5 border border-line bg-canvas text-ink text-xs font-mono font-medium tracking-wider"
+          >
+            <span>LIVE DEMO</span>
+            <ExternalLink className="w-3 h-3 text-accent-ink" />
+          </a>
+        )}
+        {project.githubUrl && (
+          <a
+            href={project.githubUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="invert-block inline-flex items-center gap-1.5 px-3 py-1.5 border border-line bg-canvas text-ink text-xs font-mono tracking-wider"
+          >
+            <Github className="w-3 h-3" />
+            <span>CODE</span>
+          </a>
+        )}
+      </div>
+    </div>
   );
 };
 
@@ -188,6 +228,26 @@ export const ProjectsSection: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [modalMedia, setModalMedia] = useState<MediaItem | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const isHoveredRef = useRef(false);
+
+  // ── Automatically slowly slide drawer (PRESERVED AS REQUESTED) ──
+  useEffect(() => {
+    if (selectedProject) return;
+
+    const interval = setInterval(() => {
+      if (!isHoveredRef.current && scrollContainerRef.current) {
+        const el = scrollContainerRef.current;
+        const maxScroll = el.scrollWidth - el.clientWidth;
+        if (el.scrollLeft >= maxScroll - 20) {
+          el.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          el.scrollBy({ left: 420, behavior: 'smooth' });
+        }
+      }
+    }, 4500);
+
+    return () => clearInterval(interval);
+  }, [selectedProject]);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -213,50 +273,63 @@ export const ProjectsSection: React.FC = () => {
   };
 
   return (
-    <section id="projects" className="py-24 px-6 bg-black text-white border-t border-neutral-900 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto">
-        
-        {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12">
+    <section
+      id="projects"
+      className="relative overflow-hidden bg-canvas py-20 px-6 sm:px-10 border-t border-line"
+    >
+      <div className="mx-auto max-w-[1280px]">
+
+        {/* Choreographed Section Header */}
+        <SectionDivider
+          number="01"
+          title="FEATURED PROJECTS"
+          tag="AUTO.DRAWER // ACTIVE"
+        />
+
+        {/* Section Navigation Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8">
           <div>
-            <div className="text-xs font-mono uppercase tracking-widest text-neutral-500 mb-2">
-              01 // Selected Engineering & Design Works
-            </div>
-            <h2 className="text-3xl sm:text-5xl font-light tracking-tight text-white">
-              Featured Projects
-            </h2>
+            <h3 className="font-display text-2xl sm:text-3xl text-ink-strong tracking-[-0.02em]">
+              Selected Systems <span className="font-serif italic font-normal text-muted">&amp; Architectures.</span>
+            </h3>
+            <p className="text-xs sm:text-sm text-muted mt-1 font-mono">
+              [ AUTO-SLIDING ARCHIVE · HOVER TO PAUSE ]
+            </p>
           </div>
 
-          {/* Nav Controls for Horizontal Scroll Cards */}
-          <div className="flex items-center space-x-3 mt-6 sm:mt-0">
+          {/* Scroll Nav Buttons — Invert-Block Tactile Switches */}
+          <div className="flex items-center gap-2 mt-4 sm:mt-0 select-none">
             <button
               onClick={scrollLeft}
-              className="w-10 h-10 rounded-full border border-neutral-800 flex items-center justify-center hover:border-white hover:bg-white hover:text-black transition-all duration-200 cursor-pointer"
+              className="invert-block w-9 h-9 flex items-center justify-center border border-line bg-surface text-ink cursor-pointer"
               aria-label="Scroll projects left"
+              title="Previous project"
             >
-              <ChevronLeft className="w-5 h-5" />
+              <ChevronLeft className="w-4 h-4" />
             </button>
             <button
               onClick={scrollRight}
-              className="w-10 h-10 rounded-full border border-neutral-800 flex items-center justify-center hover:border-white hover:bg-white hover:text-black transition-all duration-200 cursor-pointer"
+              className="invert-block w-9 h-9 flex items-center justify-center border border-line bg-surface text-ink cursor-pointer"
               aria-label="Scroll projects right"
+              title="Next project"
             >
-              <ChevronRight className="w-5 h-5" />
+              <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        {/* Animated Moving Project Cards Container */}
+        {/* ── Project Cards Drawer — automatically slowly sliding ── */}
         <div
           ref={scrollContainerRef}
-          className="flex space-x-6 overflow-x-auto pb-8 pt-2 scrollbar-none snap-x snap-mandatory"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          onMouseEnter={() => { isHoveredRef.current = true; }}
+          onMouseLeave={() => { isHoveredRef.current = false; }}
+          className="flex overflow-x-auto pb-8 pt-2 scrollbar-none snap-x snap-mandatory gap-6"
         >
           {projects.map((project, idx) => (
             <ProjectCard
               key={project.id}
+              index={idx}
               project={project}
-              idx={idx}
               onOpenModal={handleOpenModal}
             />
           ))}
@@ -264,39 +337,50 @@ export const ProjectsSection: React.FC = () => {
 
       </div>
 
-      {/* Media Modal Player Overlay */}
+      {/* Blueprint Modal */}
       <AnimatePresence>
         {selectedProject && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-4 sm:p-8"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8 bg-black/80 backdrop-blur-md"
             onClick={() => setSelectedProject(null)}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.96, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="relative w-full max-w-4xl bg-neutral-950 border border-neutral-800 rounded-2xl overflow-hidden shadow-2xl"
+              exit={{ scale: 0.96, opacity: 0 }}
+              className="relative w-full max-w-4xl overflow-hidden border border-line-strong bg-surface shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
+              {/* CAD Crosshairs on Modal Frame */}
+              <span className="tick tick-tl -top-[5px] -left-[5px]" />
+              <span className="tick tick-tr -top-[5px] -right-[5px]" />
+              <span className="tick tick-bl -bottom-[5px] -left-[5px]" />
+              <span className="tick tick-br -bottom-[5px] -right-[5px]" />
+
               {/* Modal Header */}
-              <div className="p-4 border-b border-neutral-800 flex items-center justify-between bg-neutral-900/50">
+              <div className="p-4 flex items-center justify-between border-b border-line bg-canvas">
                 <div>
-                  <h3 className="text-lg font-medium text-white">{selectedProject.title}</h3>
-                  <p className="text-xs font-mono text-neutral-400">{selectedProject.tags.join(' • ')}</p>
+                  <h3 className="font-display text-lg text-ink-strong">
+                    {selectedProject.title}
+                  </h3>
+                  <p className="font-mono text-xs text-muted">
+                    {selectedProject.tags.join(' · ')}
+                  </p>
                 </div>
                 <button
                   onClick={() => setSelectedProject(null)}
-                  className="p-2 rounded-full text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors cursor-pointer"
+                  className="invert-block p-1.5 border border-line text-muted hover:text-ink cursor-pointer"
+                  title="Close modal"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
 
-              {/* Media Player / Image Viewer */}
-              <div className="relative aspect-video bg-black flex items-center justify-center">
+              {/* Media Display */}
+              <div className="relative aspect-video flex items-center justify-center bg-sunken border-b border-line">
                 {modalMedia ? (
                   modalMedia.type === 'video' ? (
                     modalMedia.isIframe || modalMedia.url.includes('linkedin.com/embed') ? (
@@ -348,21 +432,21 @@ export const ProjectsSection: React.FC = () => {
                 )}
               </div>
 
-              {/* Modal Footer Description */}
-              <div className="p-6 bg-neutral-950">
-                <p className="text-sm font-light text-neutral-300 leading-relaxed mb-4">
+              {/* Modal Footer */}
+              <div className="p-6 bg-surface">
+                <p className="text-xs sm:text-sm text-muted leading-relaxed mb-6 font-sans">
                   {selectedProject.description}
                 </p>
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center gap-3">
                   {selectedProject.demoUrl && (
                     <a
                       href={selectedProject.demoUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center space-x-2 px-4 py-2 rounded bg-white text-black text-xs font-mono hover:bg-neutral-200 transition-colors"
+                      className="invert-block inline-flex items-center gap-2 px-4 py-2 border border-line bg-canvas text-ink font-mono text-xs font-semibold tracking-wider"
                     >
-                      <span>Open Live Demo</span>
-                      <ExternalLink className="w-3.5 h-3.5" />
+                      <span>OPEN LIVE DEMO</span>
+                      <ExternalLink className="w-3.5 h-3.5 text-accent-ink" />
                     </a>
                   )}
                   {selectedProject.githubUrl && (
@@ -370,10 +454,10 @@ export const ProjectsSection: React.FC = () => {
                       href={selectedProject.githubUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center space-x-2 px-4 py-2 rounded border border-neutral-800 text-white text-xs font-mono hover:bg-neutral-900 transition-colors"
+                      className="invert-block inline-flex items-center gap-2 px-4 py-2 border border-line bg-canvas text-ink font-mono text-xs tracking-wider"
                     >
                       <Github className="w-3.5 h-3.5" />
-                      <span>Source Code</span>
+                      <span>SOURCE REPOSITORY</span>
                     </a>
                   )}
                 </div>

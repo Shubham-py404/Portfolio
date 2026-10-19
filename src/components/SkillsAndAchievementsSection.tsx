@@ -1,219 +1,216 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import { motion } from 'motion/react';
-import { Award, ExternalLink, CheckCircle2, Code, Palette, Server, Database, Sparkles, GraduationCap } from 'lucide-react';
+import { Award, ExternalLink, Code, Palette, Server, Database, Sparkles, GraduationCap } from 'lucide-react';
+import { TrainMarquee } from './TrainMarquee';
+import { SectionDivider } from './SectionDivider';
 
 export const SkillsAndAchievementsSection: React.FC = () => {
   const { portfolio } = usePortfolio();
-  const { skills, achievements } = portfolio;
-  const [activeCategory, setActiveCategory] = useState<string>('All');
-
-  const categories = ['All', 'Frontend', 'Backend', 'Design & UX', 'Tools & Cloud'];
-
-  const filteredSkills = activeCategory === 'All'
-    ? skills
-    : skills.filter((s) => s.category === activeCategory);
+  const { skills, achievements, education } = portfolio;
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case 'Frontend':
-        return <Code className="w-4 h-4 text-white" />;
+        return <Code className="w-3.5 h-3.5 text-accent-ink" />;
       case 'Backend':
-        return <Server className="w-4 h-4 text-white" />;
+        return <Server className="w-3.5 h-3.5 text-accent-ink" />;
       case 'Design & UX':
-        return <Palette className="w-4 h-4 text-white" />;
+        return <Palette className="w-3.5 h-3.5 text-accent-ink" />;
       case 'Tools & Cloud':
-        return <Database className="w-4 h-4 text-white" />;
+        return <Database className="w-3.5 h-3.5 text-accent-ink" />;
       default:
-        return <Sparkles className="w-4 h-4 text-white" />;
+        return <Sparkles className="w-3.5 h-3.5 text-accent-ink" />;
     }
   };
 
   return (
-    <section id="skills" className="py-24 px-6 bg-black text-white border-t border-neutral-900 relative">
-      <div className="max-w-7xl mx-auto space-y-24">
-        
-        {/* SKILLS SECTION */}
-        <div>
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
-            <div>
-              <div className="text-xs font-mono uppercase tracking-widest text-neutral-500 mb-2">
-                02 // Technical Proficiency & Stack
-              </div>
-              <h2 className="text-3xl sm:text-5xl font-light tracking-tight text-white">
-                Skills & Experience
-              </h2>
-            </div>
+    <section
+      id="skills"
+      className="relative bg-canvas py-20 px-6 sm:px-10 border-t border-line"
+    >
+      <div className="mx-auto max-w-[1280px]">
 
-            {/* Category Filter Pills */}
-            <div className="flex flex-wrap gap-2 mt-6 md:mt-0">
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  className={`text-xs font-mono px-3.5 py-1.5 rounded-full border transition-all duration-200 ${
-                    activeCategory === cat
-                      ? 'bg-white text-black border-white font-medium shadow-sm'
-                      : 'bg-neutral-950 text-neutral-400 border-neutral-800 hover:border-neutral-600 hover:text-white'
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
+        {/* ── SKILLS MATRIX SECTION ── */}
+        <div className="mb-24">
+          <SectionDivider
+            number="02"
+            title="TECHNICAL MATRIX & COMPETENCIES"
+            tag="RUNTIME // VERIFIED"
+          />
+
+          <div className="mb-8">
+            <h3 className="font-display text-2xl sm:text-3xl text-ink-strong tracking-[-0.02em]">
+              Core Disciplines <span className="font-serif italic font-normal text-muted">&amp; Stack.</span>
+            </h3>
+            <p className="text-xs sm:text-sm text-muted mt-1 font-mono">
+              [ CONTINUOUS STREAM · HOVER TO INSPECT ]
+            </p>
           </div>
 
-          {/* Interactive Skills Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
-            {filteredSkills.map((skill, idx) => (
-              <motion.div
+          {/* Endless loop single-row train */}
+          <TrainMarquee direction="left-to-right" speedSeconds={32}>
+            {skills.map((skill) => (
+              <div
                 key={skill.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.04 }}
-                className="p-5 bg-neutral-950 border border-neutral-800 rounded-xl hover:border-neutral-600 transition-all duration-300 group flex items-center justify-between"
+                data-swarm-target="true"
+                className="relative flex items-center justify-between shrink-0 min-w-[240px] sm:min-w-[280px] p-4 bg-surface border border-line hover:border-line-strong transition-all duration-200 group select-none"
               >
-                <div className="flex items-center space-x-3.5">
-                  <div className="p-2.5 rounded-lg bg-neutral-900 border border-neutral-800 shrink-0">
+                {/* CAD Ticks */}
+                <span className="tick tick-tl -top-[5px] -left-[5px]" />
+                <span className="tick tick-br -bottom-[5px] -right-[5px]" />
+
+                <div className="flex items-center gap-3">
+                  <div className="shrink-0 flex items-center justify-center w-8 h-8 bg-sunken border border-line">
                     {getCategoryIcon(skill.category)}
                   </div>
                   <div>
-                    <h3 className="text-base font-medium text-white group-hover:text-neutral-200 transition-colors">
+                    <h4 className="font-sans font-medium text-ink text-sm leading-tight">
                       {skill.name}
-                    </h3>
-                    <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-wider">
+                    </h4>
+                    <span className="hud-label text-[10px] text-muted">
                       {skill.category}
                     </span>
                   </div>
                 </div>
-              </motion.div>
+
+                <span className="hud-label text-[9px] text-faint group-hover:text-accent-ink transition-colors">
+                  OK
+                </span>
+              </div>
             ))}
-          </div>
+          </TrainMarquee>
         </div>
 
-        {/* ACHIEVEMENTS & CERTIFICATES SECTION */}
-        <div>
-          <div className="mb-12">
-            <div className="text-xs font-mono uppercase tracking-widest text-neutral-500 mb-2">
-              03 // Verified Credentials & Honors
-            </div>
-            <h2 className="text-3xl sm:text-5xl font-light tracking-tight text-white">
-              Achievements & Certificates
-            </h2>
+        {/* ── ACHIEVEMENTS & CERTIFICATES ── */}
+        <div className="mb-24">
+          <SectionDivider
+            number="03"
+            title="RECOGNITION & CERTIFICATIONS"
+            tag="CREDENTIALS // AUDITED"
+          />
+
+          <div className="mb-8">
+            <h3 className="font-display text-2xl sm:text-3xl text-ink-strong tracking-[-0.02em]">
+              Milestones <span className="font-serif italic font-normal text-muted">&amp; Honors.</span>
+            </h3>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {achievements.map((ach, idx) => (
-              <motion.div
+          {/* Endless loop single-row train */}
+          <TrainMarquee direction="right-to-left" speedSeconds={40}>
+            {achievements.map((ach) => (
+              <div
                 key={ach.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: idx * 0.1 }}
-                className="p-6 bg-neutral-950 border border-neutral-800 rounded-xl hover:border-neutral-500 transition-all duration-300 flex flex-col justify-between group"
+                data-swarm-target="true"
+                className="relative flex flex-col justify-between shrink-0 min-w-[300px] sm:min-w-[360px] max-w-[380px] p-6 bg-surface border border-line hover:border-line-strong transition-all duration-200 group"
               >
+                {/* CAD Ticks */}
+                <span className="tick tick-tl -top-[5px] -left-[5px]" />
+                <span className="tick tick-tr -top-[5px] -right-[5px]" />
+                <span className="tick tick-bl -bottom-[5px] -left-[5px]" />
+                <span className="tick tick-br -bottom-[5px] -right-[5px]" />
+
                 <div>
                   <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center justify-center p-1 overflow-hidden">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 flex items-center justify-center p-1 bg-sunken border border-line">
                         {ach.badgeUrl ? (
-                          <img src={ach.badgeUrl} alt={ach.issuer} className="w-full h-full object-cover rounded grayscale" />
+                          <img src={ach.badgeUrl} alt={ach.issuer} className="w-full h-full object-cover grayscale" />
                         ) : (
-                          <Award className="w-5 h-5 text-white" />
+                          <Award className="w-4 h-4 text-accent-ink" />
                         )}
                       </div>
                       <div>
-                        <span className="text-xs font-mono text-neutral-400 block">{ach.issuer}</span>
-                        <span className="text-[10px] font-mono text-neutral-500">{ach.issueDate}</span>
+                        <span className="hud-label text-[10px] text-muted block">
+                          {ach.issuer}
+                        </span>
+                        <span className="font-mono text-[10px] text-faint">
+                          {ach.issueDate}
+                        </span>
                       </div>
                     </div>
-                    
-                    <span className="flex items-center text-[10px] font-mono text-emerald-400 bg-emerald-950/80 border border-emerald-800/80 px-2 py-0.5 rounded-full">
-                      <CheckCircle2 className="w-3 h-3 mr-1" />
-                      Verified
+
+                    <span className="hud-label text-[9px] text-accent-ink px-1.5 py-0.5 border border-line bg-canvas">
+                      HONOR
                     </span>
                   </div>
 
-                  <h3 className="text-lg font-medium text-white mb-2 leading-snug group-hover:text-neutral-200">
+                  <h4 className="font-display text-base text-ink-strong mb-2 leading-snug">
                     {ach.title}
-                  </h3>
+                  </h4>
 
-                  <p className="text-xs font-light text-neutral-400 leading-relaxed mb-6">
+                  <p className="font-sans text-xs text-muted leading-relaxed mb-6 line-clamp-3">
                     {ach.description}
                   </p>
                 </div>
 
                 {ach.credentialUrl && (
-                  <div className="pt-4 border-t border-neutral-900">
+                  <div className="pt-3 border-t border-line">
                     <a
                       href={ach.credentialUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center space-x-1.5 text-xs font-mono text-neutral-400 hover:text-white transition-colors"
+                      className="invert-block inline-flex items-center gap-2 px-2.5 py-1 border border-line bg-canvas text-ink font-mono text-[10px] tracking-wider"
                     >
-                      <span>Verify Credential</span>
-                      <ExternalLink className="w-3 h-3" />
+                      <span>VERIFY CREDENTIAL</span>
+                      <ExternalLink className="w-3 h-3 text-accent-ink" />
                     </a>
                   </div>
                 )}
-              </motion.div>
+              </div>
             ))}
-          </div>
+          </TrainMarquee>
         </div>
 
-        {/* EDUCATION SECTION */}
-        {portfolio.education && portfolio.education.length > 0 && (
+        {/* ── ACADEMIC PEDIGREE / EDUCATION ── */}
+        {education && education.length > 0 && (
           <div>
-            <div className="mb-12">
-              <div className="text-xs font-mono uppercase tracking-widest text-neutral-500 mb-2">
-                04 // Academic Background & Pedigree
-              </div>
-              <h2 className="text-3xl sm:text-5xl font-light tracking-tight text-white">
-                Education
-              </h2>
+            <div className="mb-6">
+              <span className="hud-label text-xs text-muted tracking-widest block mb-2">
+                03.B // ACADEMIC RECORD
+              </span>
+              <h3 className="font-display text-xl sm:text-2xl text-ink-strong">
+                Education <span className="font-serif italic font-normal text-muted">&amp; Foundations.</span>
+              </h3>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {portfolio.education.map((edu, idx) => (
-                <motion.div
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {education.map((edu) => (
+                <div
                   key={edu.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: idx * 0.1 }}
-                  className="p-6 bg-neutral-950 border border-neutral-800 rounded-xl hover:border-neutral-500 transition-all duration-300 flex flex-col justify-between group"
+                  data-swarm-target="true"
+                  className="relative flex flex-col justify-between p-6 bg-surface border border-line hover:border-line-strong transition-all duration-200"
                 >
+                  <span className="tick tick-tl -top-[5px] -left-[5px]" />
+                  <span className="tick tick-br -bottom-[5px] -right-[5px]" />
+
                   <div>
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="w-10 h-10 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center justify-center p-2 text-cyan-400 group-hover:text-white transition-colors">
-                        <GraduationCap className="w-5 h-5" />
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-9 h-9 flex items-center justify-center bg-sunken border border-line">
+                        <GraduationCap className="w-4 h-4 text-accent-ink" />
                       </div>
-                      
-                      <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/80 border border-cyan-800/80 px-2.5 py-0.5 rounded-full">
-                        {edu.period}
-                      </span>
+                      <div>
+                        <span className="hud-label text-[10px] text-muted block">
+                          {edu.institution}
+                        </span>
+                        <span className="font-mono text-[10px] text-faint">
+                          {edu.year}
+                        </span>
+                      </div>
                     </div>
 
-                    <h3 className="text-lg font-medium text-white mb-1.5 leading-snug group-hover:text-neutral-200">
-                      {edu.institution}
-                    </h3>
-
-                    <p className="text-xs font-mono text-neutral-400 mb-3">
+                    <h4 className="font-display text-base text-ink-strong mb-1">
                       {edu.degree}
+                    </h4>
+                    <p className="hud-label text-[10px] text-accent-ink mb-3">
+                      {edu.field}
                     </p>
-
                     {edu.description && (
-                      <p className="text-xs font-light text-neutral-400 leading-relaxed">
+                      <p className="font-sans text-xs text-muted leading-relaxed">
                         {edu.description}
                       </p>
                     )}
                   </div>
-
-                  <div className="pt-4 mt-6 border-t border-neutral-900 flex items-center justify-between text-[11px] font-mono text-neutral-500">
-                    <span>{edu.boardOrCampus || 'CBSE'}</span>
-                  </div>
-                </motion.div>
+                </div>
               ))}
             </div>
           </div>

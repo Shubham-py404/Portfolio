@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import { ArrowUp, Copy, Check, Linkedin, Github, ArrowUpRight } from 'lucide-react';
+import { ArrowUp, Copy, Check, Linkedin, Github } from 'lucide-react';
 import { LeetCodeIcon } from './LeetCodeIcon';
 import { GmailIcon } from './GmailIcon';
-import { MorphHeading } from './MorphHeading';
+import { SectionDivider } from './SectionDivider';
 
 export const ContactFooter: React.FC = () => {
   const { portfolio } = usePortfolio();
@@ -35,226 +35,194 @@ export const ContactFooter: React.FC = () => {
   return (
     <footer
       id="contact"
-      className="py-24 px-4 sm:px-8 md:px-12 bg-[#04060A] text-zinc-100 border-t border-zinc-900 relative overflow-hidden selection:bg-cyan-500 selection:text-black"
+      className="relative overflow-hidden bg-canvas py-20 px-6 sm:px-10 border-t border-line"
     >
-      {/* BEGIN: Ambient Background Layers */}
-      <div aria-hidden="true" className="absolute inset-0 pointer-events-none z-0 bg-grid-pattern opacity-60" />
-      <div aria-hidden="true" className="absolute inset-0 pointer-events-none z-0 radial-ambient-glow" />
-      {/* Subtle glowing gradient orbs for high-end lighting depth */}
-      <div
-        aria-hidden="true"
-        className="absolute top-1/4 -left-48 w-96 h-96 bg-cyan-500/10 rounded-full blur-[128px] pointer-events-none"
-      />
-      <div
-        aria-hidden="true"
-        className="absolute bottom-1/4 -right-48 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none"
-      />
-      {/* END: Ambient Background Layers */}
+      <div className="relative z-10 w-full mx-auto max-w-[1280px]">
+        
+        {/* Choreographed Section Header */}
+        <SectionDivider
+          number="04"
+          title="TRANSMISSION & CONTACT"
+          tag="DISPATCH // READY"
+        />
 
-      {/* BEGIN: Contact & Profile Section Container */}
-      <div className="relative z-10 w-full max-w-6xl mx-auto my-auto" data-purpose="portfolio-contact-section">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-          
-          {/* BEGIN: Left Column (Heading & Bio) */}
-          <section className="lg:col-span-7 flex flex-col justify-center" data-purpose="intro-info">
-           
+        <div className="grid grid-cols-1 lg:grid-cols-12 items-center gap-12">
 
-            <MorphHeading
-              text="Let's Connect"
-              className="text-4xl sm:text-5xl md:text-6xl text-white font-bold tracking-tight mb-4"
-            />
+          {/* Left: Heading & Bio */}
+          <div className="lg:col-span-7 flex flex-col justify-center">
+            <h3 className="font-display text-3xl sm:text-4xl md:text-5xl text-ink-strong tracking-[-0.03em] mb-4">
+              Let's build <span className="font-serif italic font-normal text-muted">something enduring.</span>
+            </h3>
 
-            <p className="text-sm sm:text-base text-zinc-400 max-w-lg leading-relaxed font-light">
-              Have an open opportunity, complex engineering problem, or collaboration in mind? Feel free to reach out across any platform or copy my email directly.
+            <p className="font-sans text-sm sm:text-base text-muted leading-relaxed max-w-lg mb-6">
+              Have an open engineering opportunity, a systems architecture challenge, or a collaboration in mind? Feel free to connect across any channel or copy my email directly.
             </p>
-          </section>
-          {/* END: Left Column */}
 
-          {/* BEGIN: Right Column (Square Glass Container with 4 Hyperlink Cards) */}
-          <section className="lg:col-span-5 flex justify-center" data-purpose="socials-links-panel">
-            {/* Outer Glassmorphism Card Frame */}
-            <div className="w-full max-w-md p-5 sm:p-6 rounded-2xl bg-[#090D14]/90 border border-zinc-800/90 backdrop-blur-xl shadow-2xl relative overflow-hidden group/container">
-              {/* Subtle top edge highlight line */}
-              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-zinc-400/30 to-transparent" />
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="hud-label text-xs text-muted tracking-widest">
+                RESPONSE TIME: &lt; 24 HOURS
+              </span>
+            </div>
+          </div>
 
-              {/* Social Links Stack */}
-              <div className="flex flex-col gap-3" role="list">
-                {/* 1. LinkedIn Card */}
-                <a
-                  className="social-card group flex items-center justify-between p-3.5 rounded-xl bg-zinc-900/60 border border-zinc-800/90 hover:border-[#0A66C2]/60 hover:bg-[#0A66C2]/10 transition-all duration-300"
-                  data-purpose="social-link-linkedin"
-                  href="https://www.linkedin.com/in/shubham-bansal404"
-                  rel="noopener noreferrer"
-                  role="listitem"
-                  target="_blank"
-                >
-                  <div className="flex items-center gap-3.5 min-w-0">
-                    {/* Squircle LinkedIn Logo */}
-                    <div className="w-11 h-11 rounded-xl overflow-hidden flex-shrink-0 shadow-md ring-1 ring-zinc-800 group-hover:ring-[#0A66C2]/50 transition-all flex items-center justify-center bg-[#0077B5]/10">
-                      {!imgErrors['linkedin'] ? (
-                        <img
-                          alt="LinkedIn Logo"
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                          loading="lazy"
-                          src="https://lh3.googleusercontent.com/aida/AEtjO1Wmu2FHSxPCQUXxRaorqOarxdpg4DmCpbIo4tKnFIN2decG9rviYC7StYZfiYThq5ZQ0G-H4DsRHojvNB6_CxUme_yZnq-Ia78uD6iuwkIOB9W6SSYLa9Km-0L4x7l_BcE9HjK5e_VNWyZPQKS6ulzoyyZuCRWsahrAK4bLx0SBXWB2gaXmqqkquydc6mJr1GRE17aLDOqvYDoiIEPTkUdFEgzlY8ZeM-fb5Xho80IMnSRk27wDu-vExP8"
-                          onError={() => handleImgError('linkedin')}
-                        />
-                      ) : (
-                        <Linkedin className="w-5 h-5 text-[#0A66C2]" />
-                      )}
-                    </div>
-                    {/* Platform Text Info */}
-                    <div className="truncate text-left">
-                      <div className="text-sm font-semibold text-zinc-100 group-hover:text-[#38bdf8] transition-colors leading-tight">
-                        LinkedIn
-                      </div>
-                      <div className="text-xs font-mono text-zinc-400 group-hover:text-zinc-300 truncate">
-                        shubham-bansal404
-                      </div>
-                    </div>
-                  </div>
-                  {/* External Link Action Icon */}
-                  <div className="text-zinc-500 group-hover:text-[#38bdf8] p-1.5 flex-shrink-0">
-                    <ArrowUpRight className="w-4 h-4 arrow-icon" strokeWidth={2.2} />
-                  </div>
-                </a>
+          {/* Right: Blueprint Social Channels Card */}
+          <div className="lg:col-span-5 flex justify-center">
+            <div className="relative w-full max-w-[420px] p-6 bg-surface border border-line">
+              {/* CAD Crosshairs */}
+              <span className="tick tick-tl -top-[5px] -left-[5px]" />
+              <span className="tick tick-tr -top-[5px] -right-[5px]" />
+              <span className="tick tick-bl -bottom-[5px] -left-[5px]" />
+              <span className="tick tick-br -bottom-[5px] -right-[5px]" />
 
-                {/* 2. GitHub Card */}
-                <a
-                  className="social-card group flex items-center justify-between p-3.5 rounded-xl bg-zinc-900/60 border border-zinc-800/90 hover:border-purple-500/50 hover:bg-purple-950/20 transition-all duration-300"
-                  data-purpose="social-link-github"
-                  href="https://github.com/Shubham-py404"
-                  rel="noopener noreferrer"
-                  role="listitem"
-                  target="_blank"
-                >
-                  <div className="flex items-center gap-3.5 min-w-0">
-                    {/* Squircle GitHub Logo */}
-                    <div className="w-11 h-11 rounded-xl overflow-hidden flex-shrink-0 shadow-md ring-1 ring-zinc-800 group-hover:ring-purple-500/50 transition-all flex items-center justify-center bg-purple-900/10">
-                      {!imgErrors['github'] ? (
-                        <img
-                          alt="GitHub Logo"
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                          loading="lazy"
-                          src="https://lh3.googleusercontent.com/aida/AEtjO1UwDa4G1AK1MNy_Kd6XIH0kFdSiM_c_NgGAGraoLKzUelRoBVdFz5IkDEm8ymlo-cTcb3lI_Dh4b2ANyjj-n7x4TRbL615TTM9YN7o9d1XLbhcL5oJR0Z-MGcKh5hDaR2qPulo5aRhUQGxvWSq1SR6yCw_p8ptp78OM98KnefGPeHCiS2Z3cCNG7u6utnYA7MQgztkvSq5hDKrxxrQnf3jhljh5BQEYH79fBKJmu5OWDN1cUJtkJCj8aBQ"
-                          onError={() => handleImgError('github')}
-                        />
-                      ) : (
-                        <Github className="w-5 h-5 text-purple-300" />
-                      )}
-                    </div>
-                    {/* Platform Text Info */}
-                    <div className="truncate text-left">
-                      <div className="text-sm font-semibold text-zinc-100 group-hover:text-purple-300 transition-colors leading-tight">
-                        GitHub
-                      </div>
-                      <div className="text-xs font-mono text-zinc-400 group-hover:text-zinc-300 truncate">
-                        Shubham-py404
-                      </div>
-                    </div>
-                  </div>
-                  {/* External Link Action Icon */}
-                  <div className="text-zinc-500 group-hover:text-purple-300 p-1.5 flex-shrink-0">
-                    <ArrowUpRight className="w-4 h-4 arrow-icon" strokeWidth={2.2} />
-                  </div>
-                </a>
+              <div className="hud-label text-[10px] text-muted mb-4 pb-2 border-b border-line flex items-center justify-between">
+                <span>COMMUNICATION CHANNELS</span>
+                <span className="text-accent-ink">4 AVAILABLE</span>
+              </div>
 
-                {/* 3. LeetCode Card */}
-                <a
-                  className="social-card group flex items-center justify-between p-3.5 rounded-xl bg-zinc-900/60 border border-zinc-800/90 hover:border-amber-500/50 hover:bg-amber-950/20 transition-all duration-300"
-                  data-purpose="social-link-leetcode"
-                  href="https://leetcode.com/u/Shubham-py404"
-                  rel="noopener noreferrer"
-                  role="listitem"
-                  target="_blank"
-                >
-                  <div className="flex items-center gap-3.5 min-w-0">
-                    {/* Squircle LeetCode Logo */}
-                    <div className="w-11 h-11 rounded-xl p-2 bg-zinc-950/90 border border-zinc-800 shadow-md ring-1 ring-zinc-800/80 group-hover:ring-amber-500/50 group-hover:border-amber-500/30 transition-all flex items-center justify-center flex-shrink-0">
-                      <LeetCodeIcon className="w-full h-full transition-transform duration-300 group-hover:scale-110" />
-                    </div>
-                    {/* Platform Text Info */}
-                    <div className="truncate text-left">
-                      <div className="text-sm font-semibold text-zinc-100 group-hover:text-amber-400 transition-colors leading-tight">
-                        LeetCode
-                      </div>
-                      <div className="text-xs font-mono text-zinc-400 group-hover:text-zinc-300 truncate">
-                        Shubham-py404
-                      </div>
-                    </div>
-                  </div>
-                  {/* External Link Action Icon */}
-                  <div className="text-zinc-500 group-hover:text-amber-400 p-1.5 flex-shrink-0">
-                    <ArrowUpRight className="w-4 h-4 arrow-icon" strokeWidth={2.2} />
-                  </div>
-                </a>
+              <div className="flex flex-col gap-2.5">
 
-                {/* 4. Gmail Card - Click to Copy Whole Component */}
+                {/* Gmail — click to copy with tactile feedback */}
                 <button
                   type="button"
+                  data-swarm-target="true"
                   onClick={handleCopyGmail}
-                  className="social-card group relative flex items-center justify-between p-3.5 rounded-xl bg-zinc-900/60 border border-zinc-800/90 hover:border-rose-500/50 hover:bg-rose-950/20 transition-all duration-300 w-full text-left cursor-pointer active:scale-98"
-                  data-purpose="social-link-gmail"
+                  className="invert-block group relative flex items-center justify-between w-full p-3 border border-line bg-canvas text-left cursor-pointer"
                   aria-label={`Copy ${emailText} to clipboard`}
                 >
-                  <div className="flex items-center gap-3.5 min-w-0">
-                    {/* Squircle Gmail Logo */}
-                    <div className="w-11 h-11 rounded-xl p-2.5 bg-zinc-950/90 border border-zinc-800 shadow-md ring-1 ring-zinc-800/80 group-hover:ring-rose-500/50 group-hover:border-rose-500/30 transition-all flex items-center justify-center flex-shrink-0">
-                      <GmailIcon className="w-full h-full transition-transform duration-300 group-hover:scale-110" />
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-8 h-8 flex-shrink-0 flex items-center justify-center p-1.5 bg-sunken border border-line">
+                      <GmailIcon className="w-full h-full grayscale group-hover:grayscale-0 transition-all duration-200" />
                     </div>
-                    {/* Platform Text Info */}
-                    <div className="truncate text-left">
-                      <div className="text-sm font-semibold text-zinc-100 group-hover:text-rose-400 transition-colors leading-tight flex items-center gap-2">
-                        <span>Gmail</span>
-                        <span className="text-[10px] font-mono font-normal uppercase tracking-wider text-zinc-500 group-hover:text-rose-300/80">
-                          {gmailCopied ? 'Copied!' : 'Click to copy'}
+                    <div className="truncate">
+                      <div className="flex items-center gap-2">
+                        <span className="font-sans text-xs font-semibold text-ink">
+                          Gmail
+                        </span>
+                        <span className="font-mono text-[10px] text-accent-ink">
+                          {gmailCopied ? 'COPIED!' : 'CLICK TO COPY'}
                         </span>
                       </div>
-                      <div className="text-xs font-mono text-zinc-400 group-hover:text-zinc-300 truncate">
+                      <div className="font-mono text-[11px] text-muted truncate">
                         {emailText}
                       </div>
                     </div>
                   </div>
-                  {/* Action Icon: Copy / Check Feedback */}
-                  <div className="text-zinc-500 group-hover:text-rose-400 p-1.5 flex-shrink-0 transition-colors">
+                  <div className="p-1 text-muted">
                     {gmailCopied ? (
-                      <Check className="w-4 h-4 text-emerald-400" />
+                      <Check className="w-4 h-4 text-emerald-500" />
                     ) : (
-                      <Copy className="w-4 h-4 arrow-icon" strokeWidth={2} />
+                      <Copy className="w-3.5 h-3.5" />
                     )}
                   </div>
-                  {/* Tooltip Toast Feedback */}
-                  <span
-                    className={`copy-toast pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 px-2.5 py-1 bg-rose-500 text-white text-xs font-mono font-semibold rounded shadow-lg transition-all duration-200 z-20 ${
-                      gmailCopied ? 'opacity-100 -translate-y-1' : 'opacity-0'
-                    }`}
-                  >
-                    Email Copied!
-                  </span>
                 </button>
+
+                {/* LinkedIn */}
+                <a
+                  data-swarm-target="true"
+                  className="invert-block group flex items-center justify-between p-3 border border-line bg-canvas text-left cursor-pointer"
+                  href="https://www.linkedin.com/in/shubham-bansal404"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-8 h-8 flex-shrink-0 flex items-center justify-center p-1.5 bg-sunken border border-line">
+                      <Linkedin className="w-4 h-4 text-accent-ink" />
+                    </div>
+                    <div className="truncate">
+                      <div className="font-sans text-xs font-semibold text-ink">
+                        LinkedIn
+                      </div>
+                      <div className="font-mono text-[11px] text-muted">
+                        shubham-bansal404
+                      </div>
+                    </div>
+                  </div>
+                  <span className="hud-label text-[9px] text-muted group-hover:text-ink">
+                    OPEN &rarr;
+                  </span>
+                </a>
+
+                {/* GitHub */}
+                <a
+                  data-swarm-target="true"
+                  className="invert-block group flex items-center justify-between p-3 border border-line bg-canvas text-left cursor-pointer"
+                  href="https://github.com/Shubham-py404"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-8 h-8 flex-shrink-0 flex items-center justify-center p-1.5 bg-sunken border border-line">
+                      <Github className="w-4 h-4 text-ink" />
+                    </div>
+                    <div className="truncate">
+                      <div className="font-sans text-xs font-semibold text-ink">
+                        GitHub
+                      </div>
+                      <div className="font-mono text-[11px] text-muted">
+                        Shubham-py404
+                      </div>
+                    </div>
+                  </div>
+                  <span className="hud-label text-[9px] text-muted group-hover:text-ink">
+                    OPEN &rarr;
+                  </span>
+                </a>
+
+                {/* LeetCode */}
+                <a
+                  data-swarm-target="true"
+                  className="invert-block group flex items-center justify-between p-3 border border-line bg-canvas text-left cursor-pointer"
+                  href="https://leetcode.com/u/Shubham-py404"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-8 h-8 flex-shrink-0 flex items-center justify-center p-1.5 bg-sunken border border-line">
+                      <LeetCodeIcon className="w-4 h-4" />
+                    </div>
+                    <div className="truncate">
+                      <div className="font-sans text-xs font-semibold text-ink">
+                        LeetCode
+                      </div>
+                      <div className="font-mono text-[11px] text-muted">
+                        Shubham-py404
+                      </div>
+                    </div>
+                  </div>
+                  <span className="hud-label text-[9px] text-muted group-hover:text-ink">
+                    OPEN &rarr;
+                  </span>
+                </a>
+
               </div>
             </div>
-          </section>
-          {/* END: Right Column */}
+          </div>
 
         </div>
 
-        {/* Bottom Bar: Copyright & Back to Top */}
-        <div className="mt-20 pt-8 border-t border-zinc-900/80 flex flex-col sm:flex-row items-center justify-between text-xs font-mono text-zinc-500 space-y-4 sm:space-y-0">
-          <div>
-            © {new Date().getFullYear()} {profile.name || 'Shubham Bansal'}. All rights reserved.
+        {/* Technical HUD Bottom Footer Bar */}
+        <div className="flex flex-col sm:flex-row items-center justify-between mt-20 pt-6 border-t border-line text-muted font-mono text-xs gap-4 select-none">
+          <div className="flex items-center gap-3">
+            <span className="hud-label text-[10px] text-accent-ink">
+              © {new Date().getFullYear()} {profile.name || 'Shubham Bansal'}
+            </span>
+            <span className="text-line-strong">|</span>
+            <span className="hud-label text-[10px] text-faint">
+              BUILT WITH PRECISION &amp; CARE
+            </span>
           </div>
 
           <button
             onClick={scrollToTop}
-            className="flex items-center space-x-1.5 hover:text-white transition-colors cursor-pointer group"
+            className="invert-block flex items-center gap-2 px-3 py-1.5 border border-line bg-surface text-ink text-xs font-mono cursor-pointer"
           >
-            <span>Back to top</span>
-            <ArrowUp className="w-3.5 h-3.5 group-hover:-translate-y-0.5 transition-transform" />
+            <span>RETURN TO TOP</span>
+            <ArrowUp className="w-3.5 h-3.5" />
           </button>
         </div>
+
       </div>
-      {/* END: Contact & Profile Section Container */}
     </footer>
   );
 };

@@ -1,21 +1,31 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 
-interface ScrambleHeadingProps {
+export interface ScrambleHeadingProps {
   text?: string;
   className?: string;
   chars?: string;
   duration?: number; // total scramble duration in ms
   loop?: boolean;
+  loopInterval?: number;
+  showCursor?: boolean;
+  cursorColor?: string;
+  triggerOnHover?: boolean;
+  as?: 'h1' | 'h2' | 'h3' | 'span';
 }
 
 const DEFAULT_CHARS = '!<>-_\\/[]{}—=+*^?#0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
 export const MorphHeading: React.FC<ScrambleHeadingProps> = ({
   text = "Let's Connect",
-  className = "text-4xl sm:text-5xl md:text-6xl text-white font-bold tracking-tight",
+  className = "text-3xl sm:text-4xl md:text-5xl text-white font-bold tracking-tight",
   chars = DEFAULT_CHARS,
-  duration = 1800,
+  duration = 1600,
   loop = true,
+  loopInterval = 5000,
+  showCursor = true,
+  cursorColor = 'bg-white shadow-[0_0_10px_rgba(255,255,255,0.9),0_0_20px_rgba(255,255,255,0.5)]',
+  triggerOnHover = true,
+  as: Component = 'h2',
 }) => {
   const [displayText, setDisplayText] = useState('');
   const [isBlinking, setIsBlinking] = useState(false);
@@ -62,13 +72,13 @@ export const MorphHeading: React.FC<ScrambleHeadingProps> = ({
         if (loop) {
           timeoutRef.current = setTimeout(() => {
             startScramble();
-          }, 4500);
+          }, loopInterval);
         }
       }
     };
 
     animFrameRef.current = requestAnimationFrame(update);
-  }, [text, chars, duration, loop]);
+  }, [text, chars, duration, loop, loopInterval]);
 
   // Trigger animation when scrolled into view
   useEffect(() => {
@@ -81,7 +91,7 @@ export const MorphHeading: React.FC<ScrambleHeadingProps> = ({
           setInView(true);
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.15 }
     );
 
     observer.observe(el);
@@ -106,39 +116,51 @@ export const MorphHeading: React.FC<ScrambleHeadingProps> = ({
     };
   }, [inView, startScramble, text]);
 
+  const handleMouseEnter = () => {
+    if (triggerOnHover) {
+      startScramble();
+    }
+  };
+
   return (
     <div
       ref={containerRef}
       onClick={startScramble}
+      onMouseEnter={handleMouseEnter}
+      data-swarm-target="true"
       className="relative inline-block cursor-pointer select-none group"
-      title="Click to replay scramble effect"
+      title="Click or hover to replay scramble effect"
     >
       {/* Ghost text for layout stability (prevents layout shifts during scrambling) */}
-      <h2
+      <Component
         className={`invisible select-none opacity-0 pointer-events-none ${className}`}
         aria-hidden="true"
       >
         {text}
-        <span className="inline-block w-[3.5px] sm:w-[4.5px] h-[0.8em] ml-1.5" />
-      </h2>
+        {showCursor && (
+          <span className="inline-block w-[3.5px] sm:w-[4.5px] h-[0.8em] ml-1.5" />
+        )}
+      </Component>
 
       {/* Active Scramble Text with Leading Cursor */}
-      <h2
+      <Component
         className={`absolute inset-0 flex items-center select-none ${className}`}
         aria-label={text}
       >
-        <span className="tracking-tight text-white drop-shadow-[0_0_15px_rgba(56,189,248,0.35)]">
+        <span className="tracking-tight text-white drop-shadow-[0_0_12px_rgba(255,255,255,0.2)] group-hover:drop-shadow-[0_0_20px_rgba(255,255,255,0.45)] transition-all duration-300">
           {displayText}
         </span>
 
         {/* Leading Cursor: solid during scramble, pulsing/blinking when resolved */}
-        <span
-          className={`inline-block w-[3.5px] sm:w-[4.5px] h-[0.82em] ml-1.5 align-middle bg-cyan-400 rounded-[1px] shadow-[0_0_12px_#38bdf8,0_0_24px_rgba(56,189,248,0.85)] ${
-            isBlinking ? 'animate-morph-cursor' : 'opacity-100'
-          }`}
-          aria-hidden="true"
-        />
-      </h2>
+        {showCursor && (
+          <span
+            className={`inline-block w-[3.5px] sm:w-[4.5px] h-[0.82em] ml-1.5 align-middle rounded-[1px] ${cursorColor} ${
+              isBlinking ? 'animate-morph-cursor' : 'opacity-100'
+            }`}
+            aria-hidden="true"
+          />
+        )}
+      </Component>
     </div>
   );
 };
