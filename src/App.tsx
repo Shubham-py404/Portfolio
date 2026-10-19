@@ -49,12 +49,12 @@ export default function App() {
     };
   }, []);
 
+  // Clean monochrome particles tracking the active theme (no blue tint)
   const cursorColor = currentTheme === 'dark' ? '#f2f1ee' : '#101014';
-  const cursorAccent = '#2d81ff';
 
   return (
     <PortfolioProvider>
-      <div className="relative min-h-screen font-sans antialiased bg-canvas text-ink selection:bg-accent selection:text-white">
+      <div className="relative min-h-screen font-sans antialiased bg-canvas text-ink selection:bg-ink selection:text-canvas">
 
         {/* Top-Right Floating Animated Theme Toggle */}
         <ThemeToggle />
@@ -62,23 +62,23 @@ export default function App() {
         {/* Right-Side CAD Elevation Ruler */}
         <CadRuler />
 
-        {/* Dynamic Interactive Cursor Animation */}
+        {/* Simplified, Fast, Monochrome Particle Cursor */}
         <SwarmCursor
           className="swarm-fixed-cursor"
-          count={450}
-          size={2.6}
+          count={180}
+          size={4.3}
           shape="dot"
           color={cursorColor}
-          accentColor={cursorAccent}
-          spread={70}
-          speed={3.2}
-          swirl={0.6}
-          tail={0.2}
-          trail={0.45}
-          wander={0.25}
-          depth={0.7}
+          accentColor={cursorColor}
+          spread={98}
+          speed={7.0}
+          swirl={0.1}
+          tail={0.04}
+          trail={0.2}
+          wander={0.02}
+          depth={0.4}
           targets="a, button, [data-swarm-target], [role='button'], input, textarea"
-          clickEffect="burst"
+          clickEffect="pulse"
           hideCursor={false}
           intro={true}
         />

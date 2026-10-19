@@ -38,7 +38,7 @@ export const ThemeToggle: React.FC = () => {
   }
 
   return (
-    <div className="fixed top-4 right-4 sm:top-6 sm:right-15 z-50 flex items-center select-none">
+    <div className="fixed top-4 right-4 sm:top-6 sm:right-14 z-50 flex items-center select-none">
       <button
         type="button"
         onClick={toggleTheme}

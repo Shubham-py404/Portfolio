@@ -385,6 +385,24 @@ body {
               background-color var(--duration-fast) var(--ease);
 }
 
+/* ── Smooth 3D Pop Effect for Contact Cards ── */
+.contact-card-pop {
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+              border-color 0.25s ease,
+              background-color 0.25s ease,
+              box-shadow 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform, box-shadow;
+}
+
+.contact-card-pop:hover {
+  transform: translateY(-4px) scale(1.018);
+}
+
+.contact-card-pop:active {
+  transform: translateY(-1px) scale(0.99);
+  transition-duration: 0.1s;
+}
+
 /* ── Fixed Swarm Cursor Overlay ── */
 .swarm-fixed-cursor {
   position: fixed !important;
@@ -402,6 +420,17 @@ body {
   height: 100vh !important;
   pointer-events: none !important;
 }
+
+html {
+  scrollbar-width: none; /* Firefox */
+}
+
+/* For Chrome, Safari, Edge, and Opera */
+html::-webkit-scrollbar {
+  display: none;
+}
+
+
 
 /* ── Train Marquee Animations ── */
 @keyframes train-slide-ltr {

@@ -56,14 +56,16 @@ export const CadRuler: React.FC = () => {
   return (
     <aside
       aria-hidden="true"
-      className="fixed right-0 top-0 bottom-0 z-40 hidden xl:flex flex-col justify-between pointer-events-none select-none w-10 border-l border-line bg-canvas/30 backdrop-blur-[2px]"
+      className="fixed right-0 top-0 bottom-0 z-40 hidden xl:flex flex-col justify-between pointer-events-none select-none w-12 border-l border-line bg-canvas/30 backdrop-blur-[2px]"
     >
       {/* Top Coordinate Header */}
       <div className="p-2 border-b border-line flex flex-col items-center gap-1 text-[9px] font-mono text-muted">
         <span className="tracking-widest">Y-POS</span>
         <div className="flex items-center text-ink-strong font-medium text-[11px]">
-          {digits.map((d, i) => (
-            <DigitReel key={i} digit={d} />
+          {digits.map((d) => (
+            <div className='flex items-center text-ink-strong font-medium text-[11px]'>
+              {d}
+            </div>
           ))}
           <span className="text-[9px] text-muted ml-0.5">px</span>
         </div>
@@ -96,11 +98,7 @@ export const CadRuler: React.FC = () => {
         </div>
       </div>
 
-      {/* Bottom Telemetry Label */}
-      <div className="p-2 border-t border-line flex flex-col items-center gap-0.5 text-[8px] font-mono text-muted text-center tracking-widest">
-        <span>CAD</span>
-        <span className="text-ink text-[9px]">1.0</span>
-      </div>
+    
     </aside>
   );
 };
